@@ -2,6 +2,7 @@ package com.lebs;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -40,7 +41,12 @@ public class MainActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+                String song = (String) parent.getItemAtPosition(position);
 
+                Intent intent = new Intent(MainActivity.this, ActionActivity.class);
+                intent.putExtra("song", song);
+
+                MainActivity.this.startActivity(intent);
             }
         });
     }
