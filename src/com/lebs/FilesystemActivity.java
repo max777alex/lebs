@@ -2,8 +2,8 @@ package com.lebs;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -13,15 +13,8 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
-/**
- * Created by Райан on 01.01.14.
- */
 public class FilesystemActivity extends Activity {
     private Button showFilesButton;
     private ListView filesListView;
@@ -29,12 +22,16 @@ public class FilesystemActivity extends Activity {
     private int FILENAME_IND = 0;
     private int PATH_IND = 1;
 
+    ArrayList<String> songs = new ArrayList<String>();
+    ArrayList<String> songsPaths = new ArrayList<String>();
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.filesystem_layout);
 
         showFilesButton = (Button) findViewById(R.id.showFilesButton);
         filesListView = (ListView) findViewById(R.id.filesListView);
+
 
 
         showFilesButton.setOnClickListener(new View.OnClickListener() {
@@ -55,23 +52,30 @@ public class FilesystemActivity extends Activity {
                         null,
                         null);
 
-                ArrayList<String> songs = new ArrayList<String>();
-                ArrayList<String> songsPaths = new ArrayList<String>();
+                songs.clear();
+                songsPaths.clear();
                 while(cursor.moveToNext()){
                     songs.add(cursor.getString(FILENAME_IND));
                     songsPaths.add(cursor.getString(PATH_IND));
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.item_layout,
-                                                                                                R.id.label,
-                                                                                                songs);
-                filesListView.setAdapter(adapter);
+                Context appContext = getApplicationContext();
+                if( appContext != null ) {
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(appContext, R.layout.item_layout,
+                                                                                    R.id.label,
+                                                                                    songs);
+                    filesListView.setAdapter(adapter);
+                }
             }
         });
 
         filesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                String musicFilePath = songsPaths.get(position);
+                File currentMusicFile = new File(musicFilePath);
+                if( currentMusicFile.canRead() ) {
+                    
+                }
             }
         });
         showFilesButton.performClick();
