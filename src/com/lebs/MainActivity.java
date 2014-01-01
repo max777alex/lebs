@@ -1,21 +1,12 @@
 package com.lebs;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
 
 public class MainActivity extends Activity {
     private ListView listView;
@@ -31,8 +22,7 @@ public class MainActivity extends Activity {
                 "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss",
                 "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss"};
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1, songNames);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.item_layout, R.id.label, songNames);
 
         listView.setAdapter(adapter);
 
