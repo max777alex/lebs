@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -19,7 +18,7 @@ import java.util.List;
  * Created by Райан on 01.01.14.
  */
 public class FilesystemActivity extends Activity {
-    private String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+    private String rootPath = "/"; //Environment.getExternalStorageDirectory().getAbsolutePath();
     private String currentPath = rootPath;
     private String previousPath = currentPath;
 
