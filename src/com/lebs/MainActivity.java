@@ -3,7 +3,10 @@ package com.lebs;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -28,12 +31,8 @@ public class MainActivity extends Activity {
                 "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss",
                 "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss"};
 
-        List<String> items = new ArrayList<String>();
-        Collections.addAll(items, songNames);
-
-
-        StableArrayAdapter adapter = new StableArrayAdapter(this,
-                android.R.layout.simple_list_item_1, items);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, songNames);
 
         listView.setAdapter(adapter);
 
@@ -49,28 +48,5 @@ public class MainActivity extends Activity {
                 MainActivity.this.startActivity(intent);
             }
         });
-    }
-
-    private class StableArrayAdapter extends ArrayAdapter<String> {
-
-        HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-        public StableArrayAdapter(Context context, int textViewResourceId, List<String> objects) {
-            super(context, textViewResourceId, objects);
-            for (int i = 0; i < objects.size(); ++i) {
-                mIdMap.put(objects.get(i), i);
-            }
-        }
-
-        @Override
-        public long getItemId(int position) {
-            String item = getItem(position);
-            return mIdMap.get(item);
-        }
-
-        @Override
-        public boolean hasStableIds() {
-            return true;
-        }
     }
 }
