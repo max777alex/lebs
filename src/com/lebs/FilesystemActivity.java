@@ -37,7 +37,7 @@ public class FilesystemActivity extends Activity {
             public void onClick(View v) {
                 File f = new File(currentPath);
                 List<File> currentFilesList = new ArrayList<File>();
-                if( rootPath != previousPath ) {
+                if(!rootPath.equals(previousPath)) {
                     currentFilesList.add(new File(rootPath));
                     currentFilesList.add(new File(previousPath));
                 } else {
