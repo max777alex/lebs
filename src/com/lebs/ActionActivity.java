@@ -116,8 +116,12 @@ public class ActionActivity extends Activity {
             player.release();
     }
 
+    public String norm(String s) {
+        return s.replaceAll("[^a-zA-Z0-9]","").toLowerCase();
+    }
+
     public String getUri(Song song) {
-        return "http://www.azlyrics.com/lyrics/madonna/burningup.html";
+        return "http://www.azlyrics.com/lyrics/" + norm(song.artist) + "/" + norm(song.name) + ".html";
     }
 
     public String getPageHtml(Song song) throws IOException {
@@ -164,5 +168,4 @@ public class ActionActivity extends Activity {
 
         return pageHtml.substring(i, j);
     }
-
 }
