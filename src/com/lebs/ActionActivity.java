@@ -126,27 +126,7 @@ public class ActionActivity extends Activity {
         return "http://www.azlyrics.com/lyrics/" + norm(song.artist) + "/" + norm(song.name) + ".html";
     }
 
-    public static boolean exists(String URLName){
-        try {
-            HttpURLConnection.setFollowRedirects(false);
-            // note : you may also need
-            //        HttpURLConnection.setInstanceFollowRedirects(false)
-            HttpURLConnection con =
-                    (HttpURLConnection) new URL(URLName).openConnection();
-            con.setRequestMethod("HEAD");
-            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     public String getPageHtml(String uri) throws IOException {
-
-        if(!exists(uri))
-            return "<!-- start of lyrics -->We can not find any text:(<!-- end of lyrics -->";
-
         HttpParams httpParameters = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParameters, 7000); // 7s max for connection
         HttpConnectionParams.setSoTimeout(httpParameters, 9000); // 9s max to get data
@@ -156,7 +136,10 @@ public class ActionActivity extends Activity {
 
         HttpResponse response = client.execute(request);
 
-        String html = "";
+        if(response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK)
+            return "<!-- start of lyrics -->We can not find any text:(<!-- end of lyrics -->";
+
+        String html;
         InputStream in = response.getEntity().getContent();
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder str = new StringBuilder();
@@ -174,7 +157,7 @@ public class ActionActivity extends Activity {
     public String getSongTextHtml(Song song) {
         String uri = getUri(song);
 
-        String pageHtml = "";
+        String pageHtml;
         try {
             pageHtml = getPageHtml(uri);
         } catch (IOException e) {
