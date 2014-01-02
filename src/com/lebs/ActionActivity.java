@@ -36,12 +36,12 @@ public class ActionActivity extends Activity {
             new Thread(new Runnable() {
                 public void run() {
                     if(player == null || !player.isPlaying()) {
-                        player = MediaPlayer.create(ActionActivity.this, R.raw.numb_encore);
-                        player.start();
+//                        player = MediaPlayer.create(ActionActivity.this, R.raw.numb_encore);
+//                        player.start();
                     }
                     else {
-                        player.stop();
-                        player.release();
+//                        player.stop();
+//                        player.release();
                     }
                 }
             }).start();

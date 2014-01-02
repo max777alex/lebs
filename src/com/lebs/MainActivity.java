@@ -1,16 +1,23 @@
 package com.lebs;
 
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends Activity {
     private ListView listView;
-    private Button getFilesButton;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,12 +25,11 @@ public class MainActivity extends Activity {
 
         listView = (ListView) findViewById(R.id.listView);
 
-        String[] songNames = {"aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss",
-                "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss",
-                "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss",
-                "aaa", "asd asdSS sdf", "adsfsd", "asdd", "ssss"};
+        FileSystemManager manager = new FileSystemManager(this);
 
-        ItemArrayAdapter adapter = new ItemArrayAdapter(this, songNames);
+        ArrayList<Song> songs = manager.getSongs();
+
+        ItemArrayAdapter adapter = new ItemArrayAdapter(this, songs);
 
         listView.setAdapter(adapter);
 
@@ -31,22 +37,15 @@ public class MainActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                String song = (String) parent.getItemAtPosition(position);
+                Song song = (Song) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(MainActivity.this, ActionActivity.class);
-                intent.putExtra("song", song);
+                intent.putExtra("song", song.name);
+                intent.putExtra("path", song.path);
 
                 MainActivity.this.startActivity(intent);
             }
         });
-
-        getFilesButton = (Button)findViewById(R.id.getFilesButton);
-        getFilesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent filesystemIntent = new Intent(MainActivity.this,FilesystemActivity.class);
-                startActivity(filesystemIntent);
-            }
-        });
     }
 }
+

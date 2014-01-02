@@ -8,13 +8,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ItemArrayAdapter extends ArrayAdapter<String> {
-    private final Context context;
-    private final String[] values;
+import java.util.ArrayList;
 
-    public ItemArrayAdapter(Context context, String[] values) {
+public class ItemArrayAdapter extends ArrayAdapter<Song> {
+    private final Context context;
+    private final ArrayList<Song> values;
+
+    public ItemArrayAdapter(Context context, ArrayList<Song> values) {
         super(context, R.layout.item_layout, values);
         this.context = context;
+
         this.values = values;
     }
 
@@ -25,7 +28,7 @@ public class ItemArrayAdapter extends ArrayAdapter<String> {
         TextView textView = (TextView) itemView.findViewById(R.id.label);
         ImageView imageView = (ImageView) itemView.findViewById(R.id.icon);
 
-        textView.setText(values[position]);
+        textView.setText(values.get(position).toString());
         imageView.setImageResource(R.drawable.play_icon);
 
         return itemView;
