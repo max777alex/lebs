@@ -6,12 +6,24 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ActionActivity extends Activity {
     EditText editText;
@@ -19,6 +31,7 @@ public class ActionActivity extends Activity {
     Button buttonStop;
     MediaPlayer player;
     Uri myUri;
+    String songText = "Please, wait!";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +42,14 @@ public class ActionActivity extends Activity {
         buttonStop = (Button) findViewById(R.id.stop);
 
         Intent myIntent = getIntent();
-        String song = myIntent.getStringExtra("song");
-        editText.setText(song);
-        myUri = Uri.parse(myIntent.getStringExtra("path"));
+        String name = myIntent.getStringExtra("name");
+        String path = myIntent.getStringExtra("path");
+        String artist = myIntent.getStringExtra("artist");
+        final Song song = new Song(name, path, artist);
+
+        editText.setText(name);
+
+        myUri = Uri.parse(path);
 
         buttonPlay.setOnClickListener(new View.OnClickListener() {
 
@@ -74,6 +92,22 @@ public class ActionActivity extends Activity {
                 }
             }
         });
+
+        final TextView textView = (TextView) findViewById(R.id.textView);
+
+        new Thread(new Runnable() {
+            public void run() {
+                String html = getSongTextHtml(song);
+                songText = String.valueOf(Html.fromHtml(html));
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        textView.setText(songText);
+                    }
+                });
+            }
+        }).start();
     }
 
     public void onPause() {
@@ -81,4 +115,54 @@ public class ActionActivity extends Activity {
         if(player != null)
             player.release();
     }
+
+    public String getUri(Song song) {
+        return "http://www.azlyrics.com/lyrics/madonna/burningup.html";
+    }
+
+    public String getPageHtml(Song song) throws IOException {
+
+        String uri = getUri(song);
+
+        HttpParams httpParameters = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(httpParameters, 7000); // 7s max for connection
+        HttpConnectionParams.setSoTimeout(httpParameters, 9000); // 9s max to get data
+
+        HttpClient client = new DefaultHttpClient(httpParameters);
+        HttpGet request = new HttpGet(uri);
+
+        HttpResponse response = client.execute(request);
+
+        String html = "";
+        InputStream in = response.getEntity().getContent();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        StringBuilder str = new StringBuilder();
+        String line;
+        while((line = reader.readLine()) != null)
+        {
+            str.append(line);
+        }
+        in.close();
+        html = str.toString();
+
+        return html;
+    }
+
+    public String getSongTextHtml(Song song) {
+        String pageHtml = "";
+        try {
+            pageHtml = getPageHtml(song);
+        } catch (IOException e) {
+            return "";
+        }
+
+        int i = pageHtml.indexOf("<!-- start of lyrics -->");
+        int j = pageHtml.indexOf("<!-- end of lyrics -->");
+
+        if(i == -1 || j == -1)
+            return "";
+
+        return pageHtml.substring(i, j);
+    }
+
 }

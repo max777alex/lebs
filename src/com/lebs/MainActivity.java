@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -40,8 +41,9 @@ public class MainActivity extends Activity {
                 Song song = (Song) parent.getItemAtPosition(position);
 
                 Intent intent = new Intent(MainActivity.this, ActionActivity.class);
-                intent.putExtra("song", song.name);
+                intent.putExtra("name", song.name); // TODO: make it with Song object
                 intent.putExtra("path", song.path);
+                intent.putExtra("artist", song.artist);
 
                 MainActivity.this.startActivity(intent);
             }

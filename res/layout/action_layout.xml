@@ -14,12 +14,23 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dip"
-            android:text="Play" />
+            android:text="@string/play" />
 
     <Button
             android:id="@+id/stop"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dip"
-            android:text="Stop" />
+            android:text="@string/stop" />
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/scrollView" android:layout_gravity="center_horizontal">
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/wait_message"
+                android:gravity="center"
+                android:id="@+id/textView"/>
+    </ScrollView>
 </LinearLayout>
