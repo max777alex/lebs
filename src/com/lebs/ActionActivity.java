@@ -24,6 +24,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class ActionActivity extends Activity {
     EditText editText;
@@ -124,9 +126,26 @@ public class ActionActivity extends Activity {
         return "http://www.azlyrics.com/lyrics/" + norm(song.artist) + "/" + norm(song.name) + ".html";
     }
 
-    public String getPageHtml(Song song) throws IOException {
+    public static boolean exists(String URLName){
+        try {
+            HttpURLConnection.setFollowRedirects(false);
+            // note : you may also need
+            //        HttpURLConnection.setInstanceFollowRedirects(false)
+            HttpURLConnection con =
+                    (HttpURLConnection) new URL(URLName).openConnection();
+            con.setRequestMethod("HEAD");
+            return (con.getResponseCode() == HttpURLConnection.HTTP_OK);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
-        String uri = getUri(song);
+    public String getPageHtml(String uri) throws IOException {
+
+        if(!exists(uri))
+            return "<!-- start of lyrics -->We can not find any text:(<!-- end of lyrics -->";
 
         HttpParams httpParameters = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParameters, 7000); // 7s max for connection
@@ -153,9 +172,11 @@ public class ActionActivity extends Activity {
     }
 
     public String getSongTextHtml(Song song) {
+        String uri = getUri(song);
+
         String pageHtml = "";
         try {
-            pageHtml = getPageHtml(song);
+            pageHtml = getPageHtml(uri);
         } catch (IOException e) {
             return "";
         }
