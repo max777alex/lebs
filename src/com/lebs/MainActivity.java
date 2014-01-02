@@ -39,7 +39,7 @@ public class MainActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
                 Song song = (Song) parent.getItemAtPosition(position);
 
-                Intent intent = new Intent(MainActivity.this, ActionActivity.class);
+                Intent intent = new Intent(MainActivity.this, SongLyricsActivity.class);
                 intent.putExtra("song", song.name);
                 intent.putExtra("path", song.path);
 

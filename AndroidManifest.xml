@@ -14,6 +14,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ActionActivity"/>
+        <activity android:name=".SongLyricsActivity"/>
     </application>
 </manifest>
 
