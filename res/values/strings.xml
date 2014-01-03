@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">lebs</string>
+    <string name="app_name">Learn English by song</string>
     <string name="play">Play</string>
     <string name="stop">Stop</string>
     <string name="wait_message">Please, wait!</string>
