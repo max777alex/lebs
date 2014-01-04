@@ -8,7 +8,9 @@
     <EditText
             android:layout_width="wrap_content"
             android:layout_height="34dp"
-            android:id="@+id/editText" android:layout_gravity="center_horizontal" />
+            android:editable="false"
+            android:id="@+id/editText"
+            android:layout_gravity="center_horizontal" />
     <Button
             android:id="@+id/play"
             android:layout_width="fill_parent"
@@ -25,7 +27,8 @@
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/scrollView" android:layout_gravity="center_horizontal">
+            android:id="@+id/scrollView"
+            android:layout_gravity="center_horizontal">
         <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
