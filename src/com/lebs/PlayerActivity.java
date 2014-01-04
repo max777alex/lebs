@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
 
 public class PlayerActivity extends Activity {
     TextView songTitle;
@@ -29,6 +30,7 @@ public class PlayerActivity extends Activity {
     MediaPlayer player;
     Uri myUri;
     String songText = "Please, wait!";
+    ListView songTextList;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,21 +69,23 @@ public class PlayerActivity extends Activity {
                         buttonPlay.setImageResource(R.drawable.btn_pause);
                     }
                 }
-
             }
         });
 
-        final TextView textView = (TextView) findViewById(R.id.textView);
+        songTextList = (ListView) findViewById(R.id.songText);
 
         new Thread(new Runnable() {
             public void run() {
                 String html = getSongTextHtml(song);
                 songText = String.valueOf(Html.fromHtml(html));
+                final String[] textLines = songText.split("\n");
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        textView.setText(songText);
+                        SongTextArrayAdapter songTextArrayAdapter = new SongTextArrayAdapter(PlayerActivity.this,
+                                textLines.length != 0 ? textLines : new String[] {"We can not find any text:("}); // TODO: change this
+                        songTextList.setAdapter(songTextArrayAdapter);
                     }
                 });
             }
@@ -103,7 +107,7 @@ public class PlayerActivity extends Activity {
     }
 
     public String getPageHtml(String uri) throws IOException {
-        HttpParams httpParameters = new BasicHttpParams();
+        HttpParams httpParameters = new BasicHttpParams();             // TODO: Write message, if there is no internet connection
         HttpConnectionParams.setConnectionTimeout(httpParameters, 7000); // 7s max for connection
         HttpConnectionParams.setSoTimeout(httpParameters, 9000); // 9s max to get data
 
@@ -143,7 +147,7 @@ public class PlayerActivity extends Activity {
         int i = pageHtml.indexOf("<!-- start of lyrics -->");
         int j = pageHtml.indexOf("<!-- end of lyrics -->");
 
-        if(i == -1 || j == -1)
+        if(i == -1 || j == -1 || i > j)
             return "";
 
         return pageHtml.substring(i, j);

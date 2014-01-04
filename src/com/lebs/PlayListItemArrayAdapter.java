@@ -10,21 +10,20 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ItemArrayAdapter extends ArrayAdapter<Song> {
+public class PlayListItemArrayAdapter extends ArrayAdapter<Song> {
     private final Context context;
     private final ArrayList<Song> values;
 
-    public ItemArrayAdapter(Context context, ArrayList<Song> values) {
-        super(context, R.layout.item_layout, values);
+    public PlayListItemArrayAdapter(Context context, ArrayList<Song> values) {
+        super(context, R.layout.playlist_item, values);
         this.context = context;
-
         this.values = values;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.item_layout, parent, false);
+        View itemView = inflater.inflate(R.layout.playlist_item, parent, false);
         TextView textView = (TextView) itemView.findViewById(R.id.label);
         ImageView imageView = (ImageView) itemView.findViewById(R.id.icon);
 

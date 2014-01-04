@@ -22,7 +22,7 @@ public class PlayListActivity extends Activity {
 
         ArrayList<Song> songs = manager.getSongs();
 
-        ItemArrayAdapter adapter = new ItemArrayAdapter(this, songs);
+        PlayListItemArrayAdapter adapter = new PlayListItemArrayAdapter(this, songs);
 
         listView.setAdapter(adapter);
 

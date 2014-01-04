@@ -35,19 +35,11 @@
                 android:layout_marginTop="5dp"></TextView>
     </LinearLayout>
     <!--Text of song-->
-    <ScrollView
-            android:layout_width="fill_parent"
+    <ListView
             android:layout_alignParentBottom="true"
             android:layout_below="@id/player_header_bg"
-            android:layout_height="fill_parent"
-            android:id="@+id/scrollView"
-            android:layout_gravity="center_horizontal">
-        <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/wait_message"
-                android:gravity="center"
-                android:textColor="#FFFFFF"
-                android:id="@+id/textView"/>
-    </ScrollView>
+            android:layout_width="fill_parent"
+            android:layout_height="470dp"
+            android:id="@+id/songText"/>
+
 </RelativeLayout>
