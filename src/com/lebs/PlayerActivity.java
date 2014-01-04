@@ -8,10 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -25,23 +22,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
 
-public class ActionActivity extends Activity {
+public class PlayerActivity extends Activity {
     EditText editText;
-    Button buttonPlay;
-    Button buttonStop;
+    ImageButton buttonPlay;
+    ImageButton buttonStop;
     MediaPlayer player;
     Uri myUri;
     String songText = "Please, wait!";
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.action_layout);
+        setContentView(R.layout.player);
 
         editText = (EditText) findViewById(R.id.editText);
-        buttonPlay = (Button) findViewById(R.id.play);
-        buttonStop = (Button) findViewById(R.id.stop);
+        buttonPlay = (ImageButton) findViewById(R.id.play);
+        buttonStop = (ImageButton) findViewById(R.id.stop);
 
         Intent myIntent = getIntent();
         String name = myIntent.getStringExtra("name");
@@ -67,20 +63,20 @@ public class ActionActivity extends Activity {
                 try {
                     player.setDataSource(getApplicationContext(), myUri);
                 } catch (IllegalArgumentException e) {
-                    Toast.makeText(ActionActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
                 } catch (SecurityException e) {
-                    Toast.makeText(ActionActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
                 } catch (IllegalStateException e) {
-                    Toast.makeText(ActionActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 try {
                     player.prepare();
                 } catch (IllegalStateException e) {
-                    Toast.makeText(ActionActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
                 } catch (IOException e) {
-                    Toast.makeText(ActionActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
                 }
                 player.start();
             }

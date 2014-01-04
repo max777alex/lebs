@@ -5,25 +5,32 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="34dp"
-            android:editable="false"
-            android:id="@+id/editText"
-            android:layout_gravity="center_horizontal" />
-    <Button
-            android:id="@+id/play"
+    <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dip"
-            android:text="@string/play" />
+            android:gravity="center">
 
-    <Button
-            android:id="@+id/stop"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dip"
-            android:text="@string/stop" />
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/play"
+                android:layout_gravity="bottom"/>
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/stop"
+                android:layout_gravity="bottom"/>
+
+        <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:editable="false"
+                android:id="@+id/editText"
+                android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
     <ScrollView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
