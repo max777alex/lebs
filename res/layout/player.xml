@@ -1,38 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
-
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#4a4a4a">
+    <!-- Header -->
     <LinearLayout
-            android:orientation="horizontal"
+            android:id="@+id/player_header_bg"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center">
-
+            android:layout_height="50dip"
+            android:background="@layout/bg_player_header"
+            android:layout_alignParentTop="true"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp">
+        <!--Play button-->
         <ImageButton
+                android:id="@+id/btnPlay"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_play"
+                android:layout_width="50dip"
+                android:layout_height="wrap_content"
+                android:background="@null"/>
+        <!-- Song Title -->
+        <TextView
+                android:id="@+id/songTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/play"
-                android:layout_gravity="bottom"/>
-
-        <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/stop"
-                android:layout_gravity="bottom"/>
-
-        <EditText
-                android:layout_width="wrap_content"
-                android:layout_height="34dp"
-                android:editable="false"
-                android:id="@+id/editText"
-                android:layout_gravity="center_horizontal" />
+                android:layout_weight="1"
+                android:textColor="#04b3d2"
+                android:textSize="16dp"
+                android:paddingLeft="10dp"
+                android:textStyle="bold"
+                android:text="The Good, The Bad And The Ugly"
+                android:layout_marginTop="5dp"></TextView>
     </LinearLayout>
-
+    <!--Text of song-->
     <ScrollView
             android:layout_width="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/player_header_bg"
             android:layout_height="fill_parent"
             android:id="@+id/scrollView"
             android:layout_gravity="center_horizontal">
@@ -41,6 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/wait_message"
                 android:gravity="center"
+                android:textColor="#FFFFFF"
                 android:id="@+id/textView"/>
     </ScrollView>
-</LinearLayout>
+</RelativeLayout>

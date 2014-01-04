@@ -24,9 +24,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
 public class PlayerActivity extends Activity {
-    EditText editText;
+    TextView songTitle;
     ImageButton buttonPlay;
-    ImageButton buttonStop;
     MediaPlayer player;
     Uri myUri;
     String songText = "Please, wait!";
@@ -35,9 +34,8 @@ public class PlayerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player);
 
-        editText = (EditText) findViewById(R.id.editText);
-        buttonPlay = (ImageButton) findViewById(R.id.play);
-        buttonStop = (ImageButton) findViewById(R.id.stop);
+        songTitle = (TextView) findViewById(R.id.songTitle);
+        buttonPlay = (ImageButton) findViewById(R.id.btnPlay);
 
         Intent myIntent = getIntent();
         String name = myIntent.getStringExtra("name");
@@ -45,49 +43,31 @@ public class PlayerActivity extends Activity {
         String artist = myIntent.getStringExtra("artist");
         final Song song = new Song(name, path, artist);
 
-        editText.setText(name);
+        songTitle.setText(name);
 
         myUri = Uri.parse(path);
+        player = MediaPlayer.create(this, myUri);
 
         buttonPlay.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View v) {
-                if(player != null)
-                    player.reset();
-                else
-                {
-                    player = new MediaPlayer();
-                    player.setAudioStreamType(AudioManager.STREAM_MUSIC);
+            @Override
+            public void onClick(View arg0) {
+                // check for already playing
+                if(player.isPlaying()) {
+                    if(player != null) {
+                        player.pause();
+                        // Changing button image to play button
+                        buttonPlay.setImageResource(R.drawable.btn_play);
+                    }
+                } else {
+                    // Resume song
+                    if(player != null) {
+                        player.start();
+                        // Changing button image to pause button
+                        buttonPlay.setImageResource(R.drawable.btn_pause);
+                    }
                 }
 
-                try {
-                    player.setDataSource(getApplicationContext(), myUri);
-                } catch (IllegalArgumentException e) {
-                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
-                } catch (SecurityException e) {
-                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
-                } catch (IllegalStateException e) {
-                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    player.prepare();
-                } catch (IllegalStateException e) {
-                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    Toast.makeText(PlayerActivity.this, "You might not set the URI correctly!", Toast.LENGTH_LONG).show();
-                }
-                player.start();
-            }
-        });
-
-        buttonStop.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View v) {
-                if(player != null && player.isPlaying()){
-                    player.stop();
-                }
             }
         });
 
