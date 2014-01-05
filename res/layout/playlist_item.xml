@@ -6,19 +6,27 @@
 
     <ImageView
             android:id="@+id/icon"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="4dp"
-            android:src="@drawable/play_icon" >
-    </ImageView>
+            android:src="@drawable/play_icon" />
 
-    <TextView
-            android:id="@+id/label"
+    <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@+id/label" >
-    </TextView>
+            android:layout_height="40dp"
+            android:orientation="vertical" >
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="25dp"
+                android:id="@+id/songName"
+                android:textSize="16sp"/>
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="15dp"
+                android:textSize="12sp"
+                android:id="@+id/songArtist" />
+    </LinearLayout>
 
 </LinearLayout>
