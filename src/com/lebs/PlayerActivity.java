@@ -2,11 +2,15 @@ package com.lebs;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import org.apache.http.HttpResponse;
@@ -31,6 +35,7 @@ public class PlayerActivity extends Activity {
     Uri myUri;
     String songText = "Please, wait!";
     ListView songTextList;
+    SongTextArrayAdapter songTextArrayAdapter;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +88,7 @@ public class PlayerActivity extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        SongTextArrayAdapter songTextArrayAdapter = new SongTextArrayAdapter(PlayerActivity.this,
+                        songTextArrayAdapter = new SongTextArrayAdapter(PlayerActivity.this,
                                 textLines.length != 0 ? textLines : new String[] {"We can not find any text:("}); // TODO: change this
                         songTextList.setAdapter(songTextArrayAdapter);
                     }
@@ -151,5 +156,39 @@ public class PlayerActivity extends Activity {
             return "";
 
         return pageHtml.substring(i, j);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.letter_font_size_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int maxFontSize = 20;
+        int minFontSize = 12;
+
+        for(int i = 0; i < songTextList.getCount(); ++i) {
+
+//            View itemView = (View) songTextList.getItemAtPosition(i);
+//            TextView textLineView = (TextView) itemView.findViewById(R.id.textLine);
+//
+//            textLineView.setTextSize(20); //getResources().getDimension(R.dimen.textsize)
+        }
+//        TextView tv=(TextView)findViewById(R.id.custom);
+//        Typeface face= Typeface.createFromAsset(getAssets(), "fonts/HandmadeTypewriter.ttf");
+//        tv.setTypeface(face);
+
+//        if(item.getItemId() == R.id.increase_font_size) {
+//
+//        }
+//        else {
+//
+//        }
+        return super.onOptionsItemSelected(item);
     }
 }
