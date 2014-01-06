@@ -1,9 +1,12 @@
 package com.lebs;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
@@ -106,8 +109,19 @@ public class PlayerActivity extends Activity {
         return "http://www.azlyrics.com/lyrics/" + norm(song.artist) + "/" + norm(song.name) + ".html";
     }
 
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
     public String getPageHtml(String uri) throws IOException {
-        HttpParams httpParameters = new BasicHttpParams();             // TODO: Write message, if there is no internet connection
+
+        if(!isNetworkAvailable())
+            return "<!-- start of lyrics -->We need an internet to find a text of the song:(<!-- end of lyrics -->";
+
+        HttpParams httpParameters = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParameters, 7000); // 7s max for connection
         HttpConnectionParams.setSoTimeout(httpParameters, 9000); // 9s max to get data
 

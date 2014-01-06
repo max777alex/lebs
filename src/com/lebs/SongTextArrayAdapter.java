@@ -27,7 +27,7 @@ public class SongTextArrayAdapter extends ArrayAdapter<String> {
         TextView textLineView = (TextView) itemView.findViewById(R.id.textLine);
         textLineView.setText(values[position]);
 
-        Spinner answerSpinner = (Spinner) itemView.findViewById(R.id.answerSpinner);  // TODO: make custom spinner to provide right alignment
+        Spinner answerSpinner = (Spinner) itemView.findViewById(R.id.answerSpinner);
 
         String[] data = {"one", "two", "three", "four", "five"}; // TODO: change this
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, data);
