@@ -75,6 +75,14 @@ public class PlayerActivity extends Activity {
             }
         });
 
+        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                buttonPlay.setImageResource(R.drawable.btn_play);
+            }
+        });
+
         songTextList = (ListView) findViewById(R.id.songText);
 
         new Thread(new Runnable() {
