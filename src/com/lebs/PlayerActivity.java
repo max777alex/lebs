@@ -57,20 +57,20 @@ public class PlayerActivity extends Activity {
 
             @Override
             public void onClick(View arg0) {
+
+                if(player == null)
+                    return;
+
                 // check for already playing
                 if(player.isPlaying()) {
-                    if(player != null) {
-                        player.pause();
-                        // Changing button image to play button
-                        buttonPlay.setImageResource(R.drawable.btn_play);
-                    }
+                    player.pause();
+                    // Changing button image to play button
+                    buttonPlay.setImageResource(R.drawable.btn_play);
                 } else {
                     // Resume song
-                    if(player != null) {
-                        player.start();
-                        // Changing button image to pause button
-                        buttonPlay.setImageResource(R.drawable.btn_pause);
-                    }
+                    player.start();
+                    // Changing button image to pause button
+                    buttonPlay.setImageResource(R.drawable.btn_pause);
                 }
             }
         });
@@ -95,10 +95,17 @@ public class PlayerActivity extends Activity {
         }).start();
     }
 
+    public void onDestroy() {
+        super.onDestroy();
+        if(player != null)
+            player.release();
+    }
+
     public void onPause() {
         super.onPause();
         if(player != null)
-            player.release();
+            player.pause();
+        buttonPlay.setImageResource(R.drawable.btn_play);
     }
 
     public String norm(String s) {
