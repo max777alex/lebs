@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Html;
 import android.view.View;
 import android.widget.*;
@@ -27,13 +28,17 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
-public class PlayerActivity extends Activity {
+public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
     TextView songTitle;
     ImageButton buttonPlay;
     MediaPlayer player;
     Uri myUri;
     String songText = "Please, wait!";
     ListView songTextList;
+    SeekBar songProgressBar;
+    // Handler to update UI timer, progress bar etc,.
+    Handler mHandler = new Handler();
+    Utilities utils;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +46,10 @@ public class PlayerActivity extends Activity {
 
         songTitle = (TextView) findViewById(R.id.songTitle);
         buttonPlay = (ImageButton) findViewById(R.id.btnPlay);
+        songProgressBar = (SeekBar) findViewById(R.id.songProgressBar);
+        utils = new Utilities();
+
+        songProgressBar.setOnSeekBarChangeListener(this); // Important
 
         Intent myIntent = getIntent();
         String name = myIntent.getStringExtra("name");
@@ -180,5 +189,63 @@ public class PlayerActivity extends Activity {
             return "";
 
         return pageHtml.substring(i, j);
+    }
+
+    /**
+     * Update timer on seekbar
+     * */
+    public void updateProgressBar() {
+        mHandler.postDelayed(mUpdateTimeTask, 100);
+    }
+
+    /**
+     * Background Runnable thread
+     * */
+    private Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
+            long totalDuration = player.getDuration();
+            long currentDuration = player.getCurrentPosition();
+
+            // Updating progress bar
+            int progress = utils.getProgressPercentage(currentDuration, totalDuration);
+            //Log.d("Progress", ""+progress);
+            songProgressBar.setProgress(progress);
+
+            // Running this thread after 100 milliseconds
+            mHandler.postDelayed(this, 100);
+        }
+    };
+
+    /**
+     *
+     * */
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+
+    }
+
+    /**
+     * When user starts moving the progress handler
+     * */
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
+        // remove message Handler from updating progress bar
+        mHandler.removeCallbacks(mUpdateTimeTask);
+    }
+
+    /**
+     * When user stops moving the progress hanlder
+     * */
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+        mHandler.removeCallbacks(mUpdateTimeTask);
+        int totalDuration = player.getDuration();
+        int currentPosition = utils.progressToTimer(seekBar.getProgress(), totalDuration);
+
+        // forward or backward to certain seconds
+        player.seekTo(currentPosition);
+
+        // update timer progress again
+        updateProgressBar();
     }
 }
