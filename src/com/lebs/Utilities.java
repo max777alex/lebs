@@ -1,5 +1,6 @@
 package com.lebs;
 
+import java.io.File;
 
 public class Utilities {
 	
@@ -65,4 +66,12 @@ public class Utilities {
 		// return current duration in milliseconds
 		return currentDuration * 1000;
 	}
+
+    public static boolean fileExists(String filePath) {
+        File selectedFile = new File(filePath);
+        if( !selectedFile.exists() ) {
+            return false;
+        }
+        return true;
+    }
 }

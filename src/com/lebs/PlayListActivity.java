@@ -2,6 +2,7 @@ package com.lebs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.MediaScannerConnection;
@@ -18,31 +19,16 @@ import java.util.ArrayList;
 public class PlayListActivity extends Activity {
     private ListView listView;
     private PlayListItemArrayAdapter adapter;
+    private ProgressDialog scanningDialog = null;
     private ArrayList<Song> songList;
-
-    private boolean checkFile(String filePath) {
-        File selectedFile = new File(filePath);
-        if( !selectedFile.exists() ) {
-            new AlertDialog.Builder(PlayListActivity.this)
-                    .setTitle("Read error")
-                    .setMessage("Selected file does not exist! It is recommended to rescan media files.")
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
-                    .show();
-            return false;
-        }
-        return true;
-    }
 
     private void updatePlaylist(String filePath) {
         File selectedFile = new File(filePath);
-        final String fileDirectory = selectedFile.getParent();
+        String fileDirectory = selectedFile.getParent();
 
         MediaScannerConnection.scanFile(PlayListActivity.this,
-            new String[]{fileDirectory}, null,
+            new String[]{fileDirectory},
+            new String[]{"audio/*"},
             new MediaScannerConnection.OnScanCompletedListener() {
                 @Override
                 public void onScanCompleted(final String path, final Uri uri) {
@@ -57,8 +43,10 @@ public class PlayListActivity extends Activity {
                             adapter.notifyDataSetChanged();
                         }
                     });
+                    scanningDialog.dismiss();
                 }
             });
+        scanningDialog = ProgressDialog.show(PlayListActivity.this, "", "Scanning...", true);
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -76,9 +64,23 @@ public class PlayListActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                Song song = (Song) parent.getItemAtPosition(position);
-                if( !checkFile(song.path) ){
-                    updatePlaylist(song.path);
+                final Song song = (Song) parent.getItemAtPosition(position);
+                if( !Utilities.fileExists(song.path) ){
+                    new AlertDialog.Builder(PlayListActivity.this)
+                        .setTitle("Read error")
+                        .setMessage("Selected file does not exist! It is recommended to rescan media files.")
+                        .setPositiveButton("Rescan", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                updatePlaylist(song.path);
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        })
+                        .show();
                     return;
                 }
 
