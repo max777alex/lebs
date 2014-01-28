@@ -3,7 +3,6 @@ package com.lebs;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -26,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.util.ArrayList;
 
 public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeListener {
     TextView songTitle;
