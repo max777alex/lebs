@@ -23,15 +23,18 @@ public class FileSystemManager {
         ArrayList<Song> songs = new ArrayList<Song>();
 
         Cursor cursor = getMusicCursor();
-
         if(cursor == null)
             return songs;
 
         while( cursor.getCount() > 0 && cursor.moveToNext() ) {
-            Song song = new Song(cursor.getString(FILENAME_IND),
-                    cursor.getString(PATH_IND),
-                    cursor.getString(ARTIST_IND));
-            songs.add(song);
+            String filename = cursor.getString(FILENAME_IND);
+            String path = cursor.getString(PATH_IND);
+            String artist = cursor.getString(ARTIST_IND);
+
+            if( Utilities.fileExists(path) ) {
+                Song song = new Song(filename, path, artist);
+                songs.add(song);
+            }
         }
 
         return songs;

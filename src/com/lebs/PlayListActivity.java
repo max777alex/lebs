@@ -32,18 +32,26 @@ public class PlayListActivity extends Activity {
             new MediaScannerConnection.OnScanCompletedListener() {
                 @Override
                 public void onScanCompleted(final String path, final Uri uri) {
-                    Log.i("SD-Card is scanned", String.format("Scanned path %s -> URI = %s", path, uri.toString()));
+                    Log.i(  "Directory of selected file is scanned",
+                            String.format("Scanned path %s -> URI = %s", path, uri.toString()));
 
                     FileSystemManager manager = new FileSystemManager(PlayListActivity.this);
                     songList.clear();
                     songList.addAll(manager.getSongs());
 
                     runOnUiThread(new Runnable() {
+                        @Override
                         public void run() {
                             adapter.notifyDataSetChanged();
                         }
                     });
-                    scanningDialog.dismiss();
+                    listView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            scanningDialog.dismiss();
+                        }
+                    });
+
                 }
             });
         scanningDialog = ProgressDialog.show(PlayListActivity.this, "", "Scanning...", true);
@@ -68,7 +76,7 @@ public class PlayListActivity extends Activity {
                 if( !Utilities.fileExists(song.path) ){
                     new AlertDialog.Builder(PlayListActivity.this)
                         .setTitle("Read error")
-                        .setMessage("Selected file does not exist! It is recommended to rescan media files.")
+                        .setMessage("Selected file does not exist! It is recommended to rescan media files")
                         .setPositiveButton("Rescan", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 updatePlaylist(song.path);
