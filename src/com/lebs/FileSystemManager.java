@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 
 public class FileSystemManager {
-
     private final int FILENAME_IND = 0;
     private final int PATH_IND = 1;
     private final int ARTIST_IND = 2;

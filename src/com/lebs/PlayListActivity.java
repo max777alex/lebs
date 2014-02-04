@@ -2,13 +2,11 @@ package com.lebs;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -17,49 +15,62 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class PlayListActivity extends Activity {
+    private final String FIRST_RUN = "FIRST_RUN";
+
+    private SharedPreferences preferences;
     private ListView listView;
     private PlayListItemArrayAdapter adapter;
-    private ProgressDialog scanningDialog = null;
     private ArrayList<Song> songList;
+
+    private void updatePlaylist() {
+        ScanPathsTask task = new ScanPathsTask(PlayListActivity.this, this, listView, songList, adapter);
+        task.setFullScanning();
+        task.execute();
+    }
 
     private void updatePlaylist(String filePath) {
         File selectedFile = new File(filePath);
-        String fileDirectory = selectedFile.getParent();
+        String selectedFileDirectory = selectedFile.getParent();
 
-        MediaScannerConnection.scanFile(PlayListActivity.this,
-            new String[]{fileDirectory},
-            new String[]{"audio/*"},
-            new MediaScannerConnection.OnScanCompletedListener() {
-                @Override
-                public void onScanCompleted(final String path, final Uri uri) {
-                    Log.i(  "Directory of selected file is scanned",
-                            String.format("Scanned path %s -> URI = %s", path, uri.toString()));
+        ScanPathsTask task = new ScanPathsTask(PlayListActivity.this, this, listView, songList, adapter);
+        task.setPathToScan(new String[]{selectedFileDirectory});
+        task.execute();
+    }
 
-                    FileSystemManager manager = new FileSystemManager(PlayListActivity.this);
-                    songList.clear();
-                    songList.addAll(manager.getSongs());
+    private void removeSongFromList(int position) {
+        songList.remove(position);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
+            }
+        });
+    }
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapter.notifyDataSetChanged();
+    private void tryToRunMediaScanner() {
+        boolean firstRun = preferences.getBoolean(FIRST_RUN, true);
+        if( firstRun ) {
+            preferences.edit().putBoolean(FIRST_RUN, false).commit();
+            new AlertDialog.Builder(PlayListActivity.this)
+                    .setTitle("Application first run")
+                    .setMessage("Run media scanner to find all your music?")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            updatePlaylist();
                         }
-                    });
-                    listView.post(new Runnable() {
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
-                        public void run() {
-                            scanningDialog.dismiss();
-                        }
-                    });
-
-                }
-            });
-        scanningDialog = ProgressDialog.show(PlayListActivity.this, "", "Scanning...", true);
+                        public void onClick(DialogInterface dialog, int which) {}
+                    })
+                    .show();
+        }
     }
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.playlist);
+        preferences = getSharedPreferences("PREFERENCES", Context.MODE_PRIVATE);
 
         listView = (ListView) findViewById(R.id.listView);
 
@@ -71,21 +82,21 @@ public class PlayListActivity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
                 final Song song = (Song) parent.getItemAtPosition(position);
                 if( !Utilities.fileExists(song.path) ){
                     new AlertDialog.Builder(PlayListActivity.this)
                         .setTitle("Read error")
-                        .setMessage("Selected file does not exist! It is recommended to rescan media files")
-                        .setPositiveButton("Rescan", new DialogInterface.OnClickListener() {
+                        .setMessage("Rescan media files to repair playlist?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 updatePlaylist(song.path);
                             }
                         })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-
+                                removeSongFromList(position);
                             }
                         })
                         .show();
@@ -100,5 +111,6 @@ public class PlayListActivity extends Activity {
                 PlayListActivity.this.startActivity(intent);
             }
         });
+        tryToRunMediaScanner();
     }
 }
