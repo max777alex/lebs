@@ -33,7 +33,10 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
     ImageButton buttonPlay;
     MediaPlayer player;
     Uri myUri;
+
     String songText = "Please, wait!";
+    String shownText = songText;
+
     TextView songTextView;
     SeekBar songProgressBar;
     // Handler to update UI timer, progress bar etc,.
@@ -107,16 +110,34 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
         new Thread(new Runnable() {
             public void run() {
                 String html = getSongTextHtml(song);
+
                 songText = String.valueOf(Html.fromHtml(html));
+                shownText = songText.replaceAll("[a-zA-Z\']", "*");
+//                shownText = processInputWord("love", songText, shownText);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        songTextView.setText(songText);
+                        songTextView.setText(shownText);
                     }
                 });
             }
         }).start();
+    }
+
+    public String processInputWord(String word, String songText, String shownText) {
+
+        int ind = songText.toLowerCase().indexOf(word);
+
+        while(ind != -1)
+        {
+            shownText = shownText.substring(0, ind) +
+                    songText.substring(ind, ind + word.length()) +
+                    shownText.substring(ind + word.length());
+            ind = songText.toLowerCase().indexOf(word, ind + 1);
+        }
+
+        return shownText;
     }
 
     public void onDestroy() {
@@ -133,7 +154,12 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
     }
 
     public String norm(String s) {
-        return s.replaceAll("[^a-zA-Z0-9]","").toLowerCase();
+        s = s.toLowerCase().trim();
+
+        if(s.startsWith("the "))
+            s = s.substring(4);
+
+        return s.replaceAll("[^a-zA-Z0-9]", "");
     }
 
     public String getUri(Song song) {
