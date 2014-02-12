@@ -80,6 +80,9 @@ public class ScanPathsTask extends AsyncTask <Void, Void, Void>{
         this.dialog.show();
         this.dialog.setCancelable(false);
         for( int pathInd = 0; pathInd < pathsToScan.length; ++pathInd ) {
+            if( pathsToScan[pathInd] == null ) {
+                --pathsToScanCount;
+            }
             Log.i("ExtendedMediaScanner", String.format("Start scannning %s", pathsToScan[pathInd]));
         }
     }
