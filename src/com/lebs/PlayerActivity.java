@@ -34,7 +34,7 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
     MediaPlayer player;
     Uri myUri;
     String songText = "Please, wait!";
-    ListView songTextList;
+    TextView songTextView;
     SeekBar songProgressBar;
     // Handler to update UI timer, progress bar etc,.
     Handler mHandler = new Handler();
@@ -102,20 +102,17 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
             }
         });
 
-        songTextList = (ListView) findViewById(R.id.songText);
+        songTextView = (TextView) findViewById(R.id.songText);
 
         new Thread(new Runnable() {
             public void run() {
                 String html = getSongTextHtml(song);
                 songText = String.valueOf(Html.fromHtml(html));
-                final String[] textLines = songText.split("\n");
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        SongTextArrayAdapter songTextArrayAdapter = new SongTextArrayAdapter(PlayerActivity.this,
-                                textLines.length != 0 ? textLines : new String[] {"We can not find any text:("}); // TODO: change this
-                        songTextList.setAdapter(songTextArrayAdapter);
+                        songTextView.setText(songText);
                     }
                 });
             }

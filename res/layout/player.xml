@@ -78,11 +78,21 @@
                 android:id="@+id/button"/>
     </LinearLayout>
     <!--Text of song-->
-    <ListView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/songText"
-        android:layout_below="@id/player_header_bg"
-        android:layout_above="@id/player_footer_input"/>
+    <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@id/player_header_bg"
+            android:layout_above="@id/player_footer_input"
+            android:id="@+id/scrollView"
+            android:layout_gravity="center_horizontal">
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/wait_message"
+                android:gravity="center"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:id="@+id/songText"/>
+    </ScrollView>
 
 </RelativeLayout>
