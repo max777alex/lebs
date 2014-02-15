@@ -15,7 +15,6 @@ public class ScanPathsTask extends AsyncTask <Void, Void, Void>{
     private final String audioMimeType[]        = new String[]{"audio/*"};
     private final String primaryStoragePath     = Environment.getExternalStorageDirectory().getAbsolutePath();
     private final String secondaryStoragePath   = System.getenv("SECONDARY_STORAGE");
-    private final String fullScanningPaths[]    = new String[]{ primaryStoragePath, secondaryStoragePath};
 
     private PlayListActivity activity;
     private ListView listView;
@@ -70,8 +69,18 @@ public class ScanPathsTask extends AsyncTask <Void, Void, Void>{
     }
 
     public void setFullScanning() {
-        this.pathsToScan = fullScanningPaths;
-        pathsToScanCount = fullScanningPaths.length;
+        ArrayList <String> fullScanningPaths = new ArrayList<String>();
+        pathsToScanCount = 0;
+        if( primaryStoragePath != null ) {
+            fullScanningPaths.add(primaryStoragePath);
+            ++pathsToScanCount;
+        }
+        if( secondaryStoragePath != null ) {
+            fullScanningPaths.add(secondaryStoragePath);
+            ++pathsToScanCount;
+        }
+        this.pathsToScan = new String[fullScanningPaths.size()];
+        this.pathsToScan = fullScanningPaths.toArray(this.pathsToScan);
     }
 
     @Override
@@ -80,9 +89,6 @@ public class ScanPathsTask extends AsyncTask <Void, Void, Void>{
         this.dialog.show();
         this.dialog.setCancelable(false);
         for( int pathInd = 0; pathInd < pathsToScan.length; ++pathInd ) {
-            if( pathsToScan[pathInd] == null ) {
-                --pathsToScanCount;
-            }
             Log.i("ExtendedMediaScanner", String.format("Start scannning %s", pathsToScan[pathInd]));
         }
     }
@@ -104,7 +110,6 @@ public class ScanPathsTask extends AsyncTask <Void, Void, Void>{
                     }
                 }
             });
-
         }
         while( pathsToScanCount > 0 );
         return null;
