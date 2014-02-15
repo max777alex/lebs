@@ -11,9 +11,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
-import android.view.Window;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -47,13 +49,13 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
         super.onCreate(savedInstanceState);
 
         View decorView = getWindow().getDecorView();
+
         // Hide the status bar.
         int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
         decorView.setSystemUiVisibility(uiOptions);
-        // Remember that you should never show the action bar if the
-        // status bar is hidden, so hide that too if necessary.
         ActionBar actionBar = getActionBar();
-        actionBar.hide();
+        if (actionBar != null)
+            actionBar.hide();
 
         setContentView(R.layout.player);
 
@@ -112,7 +114,8 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
                 String html = getSongTextHtml(song);
 
                 songText = String.valueOf(Html.fromHtml(html));
-                shownText = songText.replaceAll("[a-zA-Z\']", "*");
+                shownText = songText;
+                //shownText = songText.replaceAll("[a-zA-Z\']", "*");
 //                shownText = processInputWord("love", songText, shownText);
 
                 runOnUiThread(new Runnable() {
@@ -156,14 +159,18 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
     public String norm(String s) {
         s = s.toLowerCase().trim();
 
-        if(s.startsWith("the "))
+        if(s.startsWith("the ")) // TODO: remove this, back-end's responsibility!
             s = s.substring(4);
 
         return s.replaceAll("[^a-zA-Z0-9]", "");
     }
 
     public String getUri(Song song) {
-        return "http://www.azlyrics.com/lyrics/" + norm(song.artist) + "/" + norm(song.name) + ".html";
+        //return "http://www.azlyrics.com/lyrics/" + norm(song.artist) + "/" + norm(song.name) + ".html";
+//        String songUrl = "http://10.0.3.2/web/app_dev.php/lyrics/" + norm(song.artist) + "/" + norm(song.name); //10.0.3.2 for genymotion, 10.0.2.2
+        String songUrl = "http://llbs.eu1.frbit.net/lyrics/" + norm(song.artist) + "/" + norm(song.name); // TODO: to manifest, or other constants
+        Log.e("SONG_URL = ", songUrl);
+        return songUrl;
     }
 
     private boolean isNetworkAvailable() {
@@ -173,10 +180,10 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public String getPageHtml(String uri) throws IOException {
+    public String getPageHtml(String uri) throws IOException {    // TODO: to class
 
         if(!isNetworkAvailable())
-            return "<!-- start of lyrics -->We need an internet to find a text of the song:(<!-- end of lyrics -->";
+            return "We need the Internet to find a text of the song:(";
 
         HttpParams httpParameters = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParameters, 7000); // 7s max for connection
@@ -188,7 +195,7 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
         HttpResponse response = client.execute(request);
 
         if(response.getStatusLine().getStatusCode() != HttpURLConnection.HTTP_OK)
-            return "<!-- start of lyrics -->We can not find any text:(<!-- end of lyrics -->";
+            return "We can not find any text:(";
 
         String html;
         InputStream in = response.getEntity().getContent();
@@ -196,9 +203,7 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
         StringBuilder str = new StringBuilder();
         String line;
         while((line = reader.readLine()) != null)
-        {
             str.append(line);
-        }
         in.close();
         html = str.toString();
 
@@ -214,14 +219,7 @@ public class PlayerActivity extends Activity implements SeekBar.OnSeekBarChangeL
         } catch (IOException e) {
             return "";
         }
-
-        int i = pageHtml.indexOf("<!-- start of lyrics -->");
-        int j = pageHtml.indexOf("<!-- end of lyrics -->");
-
-        if(i == -1 || j == -1 || i > j)
-            return "";
-
-        return pageHtml.substring(i, j);
+        return pageHtml;
     }
 
     /**
